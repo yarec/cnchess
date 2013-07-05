@@ -1,0 +1,45 @@
+diff -ur eleeye-svn/base/base2.h eleeye-new/base/base2.h
+--- eleeye-svn/base/base2.h	2009-11-17 23:09:50 +0800
++++ eleeye-new/base/base2.h	2009-11-17 23:19:42 +0800
+@@ -26,7 +26,11 @@
+ }
+ 
+ inline void GetSelfExe(char *szDst) {
++#ifdef QTC_WCHAR_FIX
++  GetModuleFileName(NULL, (WCHAR*)szDst, PATH_MAX_CHAR);
++#else
+   GetModuleFileName(NULL, szDst, PATH_MAX_CHAR);
++#endif
+ }
+ 
+ inline void StartThread(void *ThreadEntry(void *), void *lpParameter) {
+diff -ur eleeye-svn/base/parse.h eleeye-new/base/parse.h
+--- eleeye-svn/base/parse.h	2009-11-17 23:09:50 +0800
++++ eleeye-new/base/parse.h	2009-11-17 23:19:56 +0800
+@@ -10,7 +10,11 @@
+ #include <shlwapi.h>
+ 
+ inline char *strcasestr(const char *sz1, const char *sz2) {
++#ifdef QTC_WCHAR_FIX
++  return (char*)StrStrI((WCHAR*)sz1, (WCHAR*)sz2);
++#else
+   return StrStrI(sz1, sz2);
++#endif
+ }
+ 
+ #endif
+diff -ur eleeye-svn/cchess/ecco.h eleeye-new/cchess/ecco.h
+--- eleeye-svn/cchess/ecco.h	2009-11-17 23:09:44 +0800
++++ eleeye-new/cchess/ecco.h	2009-11-17 23:20:12 +0800
+@@ -15,7 +15,11 @@
+   LPCSTR (WINAPI *EccoOpening)(LONG);
+   LPCSTR (WINAPI *EccoVariation)(LONG);
+   bool Startup(const char *szLibEccoPath, bool bTrad = false) {
++#ifdef QTC_WCHAR_FIX
++    hModule = LoadLibrary((WCHAR*)szLibEccoPath);
++#else
+     hModule = LoadLibrary(szLibEccoPath);
++#endif
+     if (hModule != NULL) {
+       EccoInitOpenVar = (VOID (WINAPI *)(LONG)) GetProcAddress(hModule, "_EccoInitOpenVar@4");
+       EccoIndex = (LONG (WINAPI *)(LPCSTR)) GetProcAddress(hModule, "_EccoIndex@4");

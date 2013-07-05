@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/res/images" >
+        <file>bg.png</file>
+        <file>black_advisor.png</file>
+        <file>black_bishop.png</file>
+        <file>black_cannon.png</file>
+        <file>black_king.png</file>
+        <file>black_king_die.png</file>
+        <file>black_knight.png</file>
+        <file>black_pawn.png</file>
+        <file>black_rook.png</file>
+        <file>null.png</file>
+        <file>red_advisor.png</file>
+        <file>red_bishop.png</file>
+        <file>red_cannon.png</file>
+        <file>red_king.png</file>
+        <file>red_king_die.png</file>
+        <file>red_knight.png</file>
+        <file>red_pawn.png</file>
+        <file>red_rook.png</file>
+        <file>select.png</file>
+        <file>forward.png</file>
+        <file>backward.png</file>
+        <file>go-home.png</file>
+    </qresource>
+</RCC>

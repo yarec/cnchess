@@ -1,0 +1,73 @@
+####### Compiler, tools and options
+CXX           = g++
+DEFINES       = -DELEEYELIB
+CXXFLAGS      = -pipe $(DEFINES)
+LINK          = g++
+LFLAGS        = -Wall,-O4 # -static
+LIBS          = $(SUBLIBS) -ldl
+CHK_DIR_EXISTS= test -d
+
+ELEEYE_LIB    = libeleeye
+ELEEYE_BIN    = eleeyebin
+TARGET        = $(ELEEYE_BIN) $(ELEEYE_LIB)
+
+####### directory
+ELEEYE_DIR    = eleeye
+OBJS_DIR      = obj
+
+####### Files
+
+SRC_BASE =    base/pipe.cpp \
+			  eleeye/pregen.cpp \
+			  eleeye/position.cpp \
+			  eleeye/genmoves.cpp
+
+SRC_BIN =     eleeye/ucci.cpp \
+			  eleeye/hash.cpp \
+			  eleeye/book.cpp \
+			  eleeye/movesort.cpp \
+			  eleeye/search.cpp \
+			  eleeye/preeval.cpp \
+			  eleeye/evaluate.cpp \
+			  eleeye/eleeye.cpp
+
+SRC_LIB =     cchess/pgnfile.cpp \
+			  cchess/cchess.cpp \
+			  codec/base64/base64.cpp
+
+SRC_ALL = $(SRC_BASE) $(SRC_BIN) $(SRC_LIB)
+
+define gen_obj_list
+$(addprefix $(OBJS_DIR)/, $(addsuffix .o , $(subst /,_,$(1)  )))
+endef
+
+####### Build rules
+all: first $(TARGET)
+
+first:
+	mkdir -p $(OBJS_DIR)
+clean:
+	rm -rf bin obj debug release dist*
+	rm -rf libeleeye.a Makefile* object_script* book.dat evaluate.dll
+	rm -rf eleeye.exe eleeyebin qtchess.exe 
+	find -name '*~'|xargs rm -f
+
+svn:
+	svn co https://xqwizard.svn.sourceforge.net/svnroot/xqwizard/ELEEYE eleeye
+
+$(ELEEYE_BIN): $(call gen_obj_list, $(SRC_BIN) $(SRC_BASE) )
+	$(LINK) $(CXXFLAGS) $(LFLAGS) -o $@ $^ $(LIBS)
+
+$(ELEEYE_LIB): $(call gen_obj_list, $(SRC_LIB) $(SRC_BASE) )
+	ar rcu $@.a $^
+	ranlib $@.a
+
+####### Compile
+
+define say
+$(1):$(2)
+	$(CXX) -c $(CXXFLAGS) -o $(1) $(2)
+endef
+
+$(foreach cpp, $(SRC_ALL), $(eval $(call say, $(OBJS_DIR)/$(subst /,_,$(cpp).o), $(ELEEYE_DIR)/$(cpp) )))
+
